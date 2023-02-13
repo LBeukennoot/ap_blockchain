@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Advanced Programming blockchain code",
   "main": "hash.js",
+  "type": "module",
   "scripts": {
     "test": "jest"
   },

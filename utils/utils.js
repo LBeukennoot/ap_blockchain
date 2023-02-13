@@ -94,41 +94,38 @@ const addArrayValues = (array) => {
     if ( length <= 2) {
 
         // sum the values of the two arrays
-        console.log(sumArrayValues(array[0],array[1]))
-        return sumArrayValues(array[0], array[1]);
+        //stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
+        const sum = array[0].map(function (num, idx) {
+            return (num + array[1][idx]) % 10;
+        });
+
+        return sum;
 
     } else {
 
-        console.log("3 or more arrays")
+        let arraySum;
 
-        let tempArraySum;
+        for( let i = 0; i < array.length - 1; i++ ) {
 
-        for( let i = 0; i < array.length; i++ ) {
+            if( !arraySum ) {
 
-            console.log("iteration number " + i)
+                arraySum = addArrayValues([array[0],array[1]])
 
-            if( !tempArraySum ) {
-                console.log(array[0])
-                tempArraySum = sumArrayValues(array[0], array[1])
-                
             } else {
-                console.log(i)
-                tempArraySum = sumArrayValues(tempArraySum, array[i])
+
+                arraySum = addArrayValues([arraySum, array[i + 1]])
 
             }
 
-            // console.log(tempArraySum)
-
         }
 
-        // console.log(tempArraySum)
-        return tempArraySum
+        return arraySum
 
     }
 
 }
 
-// addArrayValues([[0,0,0,0,0,0,0,0,0], [2,2,2,2,2,2,2,2,2]])
-addArrayValues([[1,2,3,4,5,6,7,8,9], [9,8,7,6,5,4,3,2,1], [2,2,2,2,2,2,2,2,2]])
-
-module.exports = { addArrayValues, sumArrayValues, check10Multiple, arrayToChunks, arrayTo10Multiple, numToSingleValues, charToAscii };
+// export default { charToAscii }
+module.exports = { charToAscii }
+// export default { addArrayValues, check10Multiple, numToSingleValues, charToAscii };
+// module.exports = { addArrayValues, check10Multiple, numToSingleValues, charToAscii };
