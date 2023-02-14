@@ -1,18 +1,39 @@
-const charToAscii = (char) => {
+export function removeSpacesFromArray(array) {
+    return array.filter(char => char !== " ");
+}
+
+export function arrayValuesToAscii(array) {
+    return array.map(char => {
+
+        return charToAscii(char);
+
+    });
+}
+
+export function sumArrayValues(array1, array2) {
+    //stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
+    return array1.map(function (num, idx) {
+        return (num + array2[idx]) % 10;
+    });
+}
+
+export function charToAscii (char) {
 
     if ( parseInt(char) ) {
 
+        //char is a number
         return parseInt(char);
 
     } else {
 
+        // char is a string
         return char.charCodeAt(0);
 
     }
 }
 
 //stackoverflow: https://stackoverflow.com/questions/7784620/javascript-number-split-into-individual-digits
-const numToSingleValues = (number) => {
+export function numToSingleValues (number) {
     if(typeof number !== "number") {
         throw new Error("Input is not a number");
     }
@@ -34,7 +55,7 @@ const arrayTo10Multiple = (array) => {
 
 }
 
-const arrayToChunks = (array, chunkSize = 10) => {
+export function arrayToChunks(array, chunkSize = 10) {
 
     let chunks = [];
 
@@ -50,7 +71,7 @@ const arrayToChunks = (array, chunkSize = 10) => {
 
 }
 
-const check10Multiple = (array) => {
+export function check10Multiple (array) {
 
     const length = array.length;
 
@@ -74,58 +95,9 @@ const check10Multiple = (array) => {
     } else {
 
         // adding 0,1,2,3... to array
+        console.log("adding mulitple to array")
         return arrayTo10Multiple(array);
 
     }
     
 }
-
-//stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
-const sumArrayValues = (array1, array2) => {
-    return array1.map(function (num, idx) {
-        return (num + array2[idx]) % 10;
-    });
-}
-
-const addArrayValues = (array) => {
-
-    const length = array.length;
-
-    if ( length <= 2) {
-
-        // sum the values of the two arrays
-        //stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
-        const sum = array[0].map(function (num, idx) {
-            return (num + array[1][idx]) % 10;
-        });
-
-        return sum;
-
-    } else {
-
-        let arraySum;
-
-        for( let i = 0; i < array.length - 1; i++ ) {
-
-            if( !arraySum ) {
-
-                arraySum = addArrayValues([array[0],array[1]])
-
-            } else {
-
-                arraySum = addArrayValues([arraySum, array[i + 1]])
-
-            }
-
-        }
-
-        return arraySum
-
-    }
-
-}
-
-// export default { charToAscii }
-module.exports = { charToAscii }
-// export default { addArrayValues, check10Multiple, numToSingleValues, charToAscii };
-// module.exports = { addArrayValues, check10Multiple, numToSingleValues, charToAscii };

@@ -1,155 +1,74 @@
 // const sha256 = require('js-sha256');
 import sha256 from 'js-sha256';
+// const sha256 = require("js-sha256");
+import { removeSpacesFromArray, check10Multiple, numToSingleValues, charToAscii, arrayToChunks, sumArrayValues } from './utils/utils.js';
+// const { removeSpacesFromArray } = require("./utils/utils.js");
 
 const mod10sha = (string = "") => {
 
-    const charToAscii = (char) => {
+    let stringArray = string.split("");
 
-        if ( parseInt(char) ) {
-    
-            //char is a number
-            return parseInt(char);
-    
-        } else {
-    
-            // char is a string
-            return char.charCodeAt(0);
-    
-        }
-    }
-    
-    //stackoverflow: https://stackoverflow.com/questions/7784620/javascript-number-split-into-individual-digits
-    const numToSingleValues = (number) => {
-        if(typeof number !== "number") {
-            throw new Error("Input is not a number");
-        }
-    
-        const digits = number.toString().split('');
-        return digits.map(Number);
-    }
-    
-    const arrayTo10Multiple = (array) => {
-    
-        // adding fill to array
-        const fill = [0,1,2,3,4,5,6,7,8,9];
-        const filledArray = array.concat(fill);
-    
-        // split array into chunk and only use [0]
-        const multipleArray = arrayToChunks(filledArray)[0];
-    
-        return multipleArray;
-    
-    }
-    
-    const arrayToChunks = (array, chunkSize = 10) => {
-    
-        let chunks = [];
-    
-        for ( let i = 0; i < array.length; i += chunkSize) {
-    
-            // slice array into chunk and add to array
-            const chunk = array.slice(i, i + chunkSize);
-            chunks.push( chunk );
-    
-        }
-    
-        return chunks;
-    
-    }
-    
-    const check10Multiple = (array) => {
-    
-        const length = array.length;
-    
-        if ( length === 10 ) {
-    
-            // return current (correct) array
-            return array
-    
-        } else if ( length > 10 ) {
-    
-            // split too long array into chunks
-            const chunks = arrayToChunks(array);
-    
-            // making sure last chunk also has length == 10
-            const chunk10Multple = check10Multiple(chunks[chunks.length - 1]);
-            chunks.pop();
-            chunks.push(chunk10Multple);
-    
-            return chunks;
-    
-        } else {
-    
-            // adding 0,1,2,3... to array
-            return arrayTo10Multiple(array);
-    
-        }
-        
-    }
-    
-    //stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
-    const sumArrayValues = (array1, array2) => {
-        return array1.map(function (num, idx) {
-            return (num + array2[idx]) % 10;
-        });
-    }
-    
-    const addArrayValues = (array) => {
-    
-        const length = array.length;
-    
-        if ( length <= 2) {
-    
-            // sum the values of the two arrays
-            //stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
-            const sum = array[0].map(function (num, idx) {
-                return (num + array[1][idx]) % 10;
-            });
-    
-            return sum;
-    
-        } else {
-    
-            let arraySum;
-    
-            for( let i = 0; i < array.length - 1; i++ ) {
-    
-                if( !arraySum ) {
-    
-                    arraySum = addArrayValues([array[0],array[1]])
-    
-                } else {
-    
-                    arraySum = addArrayValues([arraySum, array[i + 1]])
-    
-                }
-    
-            }
-    
-            return arraySum
-    
-        }
-    
-    }
-    
-    let split = string.split("");
+    // remove spaces from string
+    let stringArrayNoSpaces = removeSpacesFromArray(stringArray);
 
-    let ascii = split
-        .filter(char => char !== " ")
-        .map(char => {
+    // turn characters into ascii value, except numbers
+    let arrayValuesAscii = stringArrayNoSpaces.map(char => {
+        return charToAscii(char);
+    });
 
-            const charAscii =  charToAscii(char);
-            return numToSingleValues(charAscii);
+    // split ascii values into single values [1,1,6,...]
+    let splittedArrayValues = arrayValuesAscii.map(ascii => {
+        return numToSingleValues(ascii);
+    })
 
-        });
+    splittedArrayValues = splittedArrayValues.flat(1);
 
-    // chunk flattened ascii array
-    console.log(ascii.flat(1))
-    const asciiArrayChunked = check10Multiple(ascii.flat(1));
+    // split up this array into blocks of 10
+    let chunkedArrays = arrayToChunks(splittedArrayValues);
 
-    const sum = addArrayValues(asciiArrayChunked)
+    // if array length < 10, add 0,1,2,3,... untill length == 10
+    let chunkedArrays10multiple = [];
 
-    return sha256(sum.join(""));
+    for(const chunkedArray of chunkedArrays) {
+        chunkedArrays10multiple.push(check10Multiple(chunkedArray));
+    }
+
+    // add the first array to the second array, take the modulus of the sum
+    let sumArray = [0,0,0,0,0,0,0,0,0,0];
+    
+    // console.log("should be adding " + chunkedArrays10multiple.length + " arrays")
+    // console.log(chunkedArrays10multiple)
+
+    for(let i = 0; i < chunkedArrays10multiple.length; i += 1) {
+
+        const arrayIndex = i;
+
+        // console.log("now at iteration "+ arrayIndex)
+
+        // if(sumArray == undefined) {
+
+        //     sumArray = sumArrayValues(chunkedArrays10multiple[0], chunkedArrays10multiple[1]);
+        //     console.log("add array with id 0 and array with id 1")
+
+        // } else {
+
+            // then add the third array to the result of the previous step
+            sumArray = sumArrayValues(sumArray, chunkedArrays10multiple[arrayIndex]);
+            // console.log("add temp array and array with id " + arrayIndex)
+            // console.log(sumArray)
+
+        // }
+    }
+
+    // make string of this array (join(""))
+    const stringOfSumArray = sumArray.join("");
+
+    // do a sha256 over this string
+    const hashedString = sha256(stringOfSumArray);
+
+    //return result
+    return hashedString;
+
 }
 
 // modules.exports = mod10;

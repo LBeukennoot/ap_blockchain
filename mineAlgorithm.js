@@ -1,4 +1,6 @@
 import fetch from 'node-fetch';
+// const fetch = require("node-fetch");
+// const mod10sha = require("./mod10sha.js");
 import mod10sha from './mod10sha.js';
 
 const nextBlockLink = "https://programmeren9.cmgt.hr.nl:8000/api/blockchain/next"
@@ -24,11 +26,11 @@ const hashNextBlock = ({ blockchain }) => {
 
     const transaction = data[0];
     let hashable = hash
-    hashable += transaction.from 
-    hashable += transaction.to 
-    hashable += transaction.amount 
-    hashable += transaction.timestamp 
-    hashable += timestamp 
+    hashable += transaction.from
+    hashable += transaction.to
+    hashable += transaction.amount
+    hashable += transaction.timestamp
+    hashable += timestamp
     hashable += nonce
 
     // console.log(mod10sha(hashable))
