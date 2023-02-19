@@ -14,11 +14,33 @@ export function arrayValuesToAscii(array) {
     });
 }
 
-export function sumArrayValues(array1, array2) {
+//expects an array with 2 or more arrays with length == 10
+export function sumArrayValues(arrays) {
+
+    // console.log(arrays)
+    for(const array of arrays) {
+        if(array.length != 10) {
+            throw new Error("Array must have length 10");
+        }
+    }
+
     //stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
-    return array1.map(function (num, idx) {
-        return (num + array2[idx]) % 10;
-    });
+    const sum = (array1, array2) => {
+        return array1.map(function (num, idx) {
+            return (num + array2[idx]) % 10;
+        });
+    }
+
+    let sumArray = [0,0,0,0,0,0,0,0,0,0];
+
+    for(let i = 0; i < arrays.length; i += 1) {
+
+        const arrayIndex = i;
+
+        sumArray = sum(sumArray, arrays[arrayIndex]);
+    }
+
+    return sumArray;
 }
 
 export function charToAscii (char) {
@@ -46,7 +68,13 @@ export function numToSingleValues (number) {
     return digits.map(Number);
 }
 
+//expects array with length <= 10
+//returns array with length == 10
 export function arrayTo10Multiple(array) {
+
+    if (array.length > 10) {
+        throw new Error("Array too long");
+    }
 
     // adding fill to array
     const fill = [0,1,2,3,4,5,6,7,8,9];
@@ -81,30 +109,14 @@ export function arrayToChunks(array, chunkSize = 10) {
 
 export function check10Multiple (array) {
 
-    const length = array.length;
-
-    if ( length === 10 ) {
-
-        // return current (correct) array
-        return array
-
-    } else if ( length > 10 ) {
-
-        // split too long array into chunks
-        const chunks = arrayToChunks(array);
-
-        // making sure last chunk also has length == 10
-        const chunk10Multple = check10Multiple(chunks[chunks.length - 1]);
-        chunks.pop();
-        chunks.push(chunk10Multple);
-
-        return chunks;
-
-    } else {
-
-        // adding 0,1,2,3... to array
+    if(array.length < 10) {
         return arrayTo10Multiple(array);
+    } else if(array.length > 10) {
 
+        throw new Error("[check10Multiple] Input array > 10");
+        
+    } else {
+        return array;
     }
     
 }
