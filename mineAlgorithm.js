@@ -8,7 +8,7 @@ const nextBlockLink = "https://programmeren9.cmgt.hr.nl:8000/api/blockchain/next
 
 // stap 1
 
-console.log(mod10sha("text"))
+// console.log(mod10sha("text"))
 // console.log(mod10sha("000078454c038871fa4d67b0022a30baaf25eaa231f8991b108e2624f052f3f8CMGT Mining CorporationBob PIKAB11548689513858154874778871610312"))
 
 
