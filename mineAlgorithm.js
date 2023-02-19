@@ -16,22 +16,63 @@ fetch(nextBlockLink)
     .then((res) => res.json())
     .then((data) => hashNextBlock(data))
 
-const hashNextBlock = ({ blockchain }) => {
-    const {hash, nonce, timestamp, data} = blockchain;
+const hashNextBlock = (data) => {
 
-    if (data.length > 1) {
-        console.error("blockchain data contains multiple arrays");
-        return;
+    const getHashedNewBlock = (data, lastHashedBlock, nonce) => {
+        if (data.transactions.length > 1) {
+            console.error("[API error] Didn't expect multiple transactions");
+            return;
+        }
+
+        // console.log(data)
+        let transaction = data.transactions[0]
+        let hashable = lastHashedBlock;
+        hashable += transaction.from;
+        hashable += transaction.to;
+        hashable += transaction.amount;
+        hashable += transaction.timestamp;
+        hashable += data.timestamp;
+        hashable += nonce;
+
+        return mod10sha(hashable);
     }
 
-    const transaction = data[0];
-    let hashable = hash
-    hashable += transaction.from
-    hashable += transaction.to
-    hashable += transaction.amount
-    hashable += transaction.timestamp
-    hashable += timestamp
-    hashable += nonce
+    const getHashedLastBlock = (blockchain) => {
+        const {hash, nonce, timestamp, data} = blockchain;
+        // const
 
-    console.log(mod10sha(hashable))
+        if (data.length > 1) {
+            console.error("[API error] Blockchain data contains multiple arrays");
+            return;
+        }
+
+        const transaction = data[0];
+        let hashable = hash
+        hashable += transaction.from
+        hashable += transaction.to
+        hashable += transaction.amount
+        hashable += transaction.timestamp
+        hashable += timestamp
+        hashable += nonce
+        console.log(hashable);
+        return mod10sha(hashable)
+    }
+
+    const lastHashedBlock = getHashedLastBlock(data.blockchain);
+    console.log(lastHashedBlock)
+    let nonceFound = false;
+    let newNonce = 0;
+
+    // while(nonceFound == false) {
+        // for(let i = 10000; i < 50000 && nonceFound == false; i+=1) {
+        //     let newHashable = getHashedNewBlock(data, lastHashedBlock, i);
+        //     console.log(i + " " + newHashable)
+
+        //     if(newHashable.startsWith("0000")) {
+        //         console.log(newHashable)
+        //         nonceFound = true;
+        //         newNonce = i;
+        //     }
+        // }
+    // }
 }

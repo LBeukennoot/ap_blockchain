@@ -1,17 +1,17 @@
 // const sha256 = require('js-sha256');
 import sha256 from 'js-sha256';
 // const sha256 = require("js-sha256");
-import { removeSpacesFromArray, check10Multiple, numToSingleValues, charToAscii, arrayToChunks, sumArrayValues } from './utils/utils.js';
+import { removeSpacesFromArray, check10Multiple, numToSingleValues, charToAscii, arrayToChunks, sumArrayValues, flattenArray, splitString } from './utils/utils.js';
 // const { removeSpacesFromArray } = require("./utils/utils.js");
 
 const mod10sha = (string = "") => {
 
-    let stringArray = string.split("");
+    let stringArray = string.splitString("");
 
     // remove spaces from string
     let stringArrayNoSpaces = removeSpacesFromArray(stringArray);
 
-    // turn characters into ascii value, except numbers
+    // turn characters into ascii value, except numbers (t == 166)
     let arrayValuesAscii = stringArrayNoSpaces.map(char => {
         return charToAscii(char);
     });
@@ -21,12 +21,19 @@ const mod10sha = (string = "") => {
         return numToSingleValues(ascii);
     })
 
-    splittedArrayValues = splittedArrayValues.flat(1);
+    splittedArrayValues = flattenArray(splittedArrayValues);
 
     // split up this array into blocks of 10
     let chunkedArrays = arrayToChunks(splittedArrayValues);
 
     // if array length < 10, add 0,1,2,3,... untill length == 10
+
+    chunkedArrays.map(array => {
+        check10Multiple(array);
+    });
+
+    console.log(chunkedArrays);
+
     let chunkedArrays10multiple = [];
 
     for(const chunkedArray of chunkedArrays) {

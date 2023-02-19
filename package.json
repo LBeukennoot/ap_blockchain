@@ -6,8 +6,7 @@
   "type": "module",
   "transform": {},
   "scripts": {
-    "test": "jest"
-  },
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LBeukennoot/ap_blockchain.git"

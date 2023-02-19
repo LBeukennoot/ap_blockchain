@@ -2,6 +2,10 @@ export function removeSpacesFromArray(array) {
     return array.filter(char => char !== " ");
 }
 
+export function splitString(string) {
+    return string.split("");
+}
+
 export function arrayValuesToAscii(array) {
     return array.map(char => {
 
@@ -42,7 +46,7 @@ export function numToSingleValues (number) {
     return digits.map(Number);
 }
 
-const arrayTo10Multiple = (array) => {
+export function arrayTo10Multiple(array) {
 
     // adding fill to array
     const fill = [0,1,2,3,4,5,6,7,8,9];
@@ -53,6 +57,10 @@ const arrayTo10Multiple = (array) => {
 
     return multipleArray;
 
+}
+
+export function flattenArray(array) {
+    return array.flat(2);
 }
 
 export function arrayToChunks(array, chunkSize = 10) {
@@ -95,7 +103,6 @@ export function check10Multiple (array) {
     } else {
 
         // adding 0,1,2,3... to array
-        console.log("adding mulitple to array")
         return arrayTo10Multiple(array);
 
     }
