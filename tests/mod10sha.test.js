@@ -3,51 +3,51 @@ import { removeSpacesFromArray, charToAscii, numToSingleValues, arrayTo10Multipl
 
 //removeSpacesFromArray
 
-test("removes spaces from an array", () => {
+test("[removeSpacesFromArray] removes spaces from an array", () => {
     expect(removeSpacesFromArray(["t", "e","x","t"," "])).toStrictEqual(["t", "e","x","t"]);
 });
 
-test("removes multiple spaces from an array", () => {
+test("[removeSpacesFromArray] removes multiple spaces from an array", () => {
     expect(removeSpacesFromArray(["t", "e","x","t"," "," "])).toStrictEqual(["t", "e","x","t"]);
 });
 
-test("returns same array if there are no spaces", () => {
+test("[removeSpacesFromArray] returns same array if there are no spaces", () => {
     expect(removeSpacesFromArray(["t", "e","x","t"])).toStrictEqual(["t", "e","x","t"]);
 });
 
 //charToAscii
 
-test("numbers stay numbers", () => {
+test("[charToAscii] numbers stay numbers", () => {
     expect(charToAscii(9)).toBe(9);
-    expect(charToAscii(10)).toBe(10);
+    expect(charToAscii('9')).toBe(9);
 });
 
-test("characters will be converted to ascii", () => {
+test("[charToAscii] characters will be converted to ascii", () => {
     expect(charToAscii("a")).toBe(97);
     expect(charToAscii("b")).toBe(98);
 });
 
 // numToSingleValues
 
-test("will throw error if not a number", () => {
+test("[numToSingleValues] will throw error if not a number", () => {
     expect(() => {numToSingleValues("a")}).toThrow("Input is not a number");
 })
 
-test("will separated values into array", () => {
+test("[numToSingleValues] will separated values into array", () => {
     expect(numToSingleValues(123)).toStrictEqual([1, 2, 3]);
 });
 
 //arrayTo10Multiple
 
-test("will add numbers to array length of 10", () => {
+test("[arrayTo10Multiple] will add numbers to array length of 10", () => {
     expect(arrayTo10Multiple([0,1])).toStrictEqual([0,1,0,1,2,3,4,5,6,7]);
 })
 
-test("will return the same array if already length of 10", () => {
+test("[arrayTo10Multiple] will return the same array if already length of 10", () => {
     expect(arrayTo10Multiple([0,1,2,3,4,5,6,7,8,9])).toStrictEqual([0,1,2,3,4,5,6,7,8,9]);
 })
 
-test("will throw error if input array length > 10", () => {
+test("[arrayTo10Multiple] will throw error if input array length > 10", () => {
     expect(() => arrayTo10Multiple([0,1,2,3,4,5,6,7,8,9,1,2])).toThrow("Array too long");
 })
 

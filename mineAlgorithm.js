@@ -1,22 +1,21 @@
 import fetch from 'node-fetch';
-// const fetch = require("node-fetch");
-// const mod10sha = require("./mod10sha.js");
 import mod10sha from './mod10sha.js';
 
 const nextBlockLink = "https://programmeren9.cmgt.hr.nl:8000/api/blockchain/next"
-
+const nonceFoundLink = "https://programmeren9.cmgt.hr.nl:8000/api/blockchain"
 
 // stap 1
-
-// console.log(mod10sha("text"))
-// console.log(mod10sha("000078454c038871fa4d67b0022a30baaf25eaa231f8991b108e2624f052f3f8CMGT Mining CorporationBob PIKAB11548689513858154874778871610312"))
-
-
 fetch(nextBlockLink)
     .then((res) => res.json())
     .then((data) => hashNextBlock(data))
 
 const hashNextBlock = (data) => {
+
+
+    
+    if(data.open) {
+        // throw new Error("Closed");
+    }
 
     const getHashedNewBlock = (data, lastHashedBlock, nonce) => {
         if (data.transactions.length > 1) {
@@ -59,20 +58,37 @@ const hashNextBlock = (data) => {
     }
 
     const lastHashedBlock = getHashedLastBlock(data.blockchain);
-    // console.log(lastHashedBlock)
     let nonceFound = false;
     let newNonce = 0;
 
-    // while(nonceFound == false) {
-        // for(let i = 10000; i < 50000 && nonceFound == false; i+=1) {
-        //     let newHashable = getHashedNewBlock(data, lastHashedBlock, i);
-        //     console.log(i + " " + newHashable)
+    // stap 2
+    while(nonceFound == false) {
+        for(let i = 1; i < 300000 && nonceFound == false; i+=1) {
+            let newHashable = getHashedNewBlock(data, lastHashedBlock, i);
+            console.log(i + " " + newHashable)
+        console.log(data.countdown)
 
-        //     if(newHashable.startsWith("0000")) {
-        //         console.log(newHashable)
-        //         nonceFound = true;
-        //         newNonce = i;
-        //     }
-        // }
-    // }
+
+            if(newHashable.startsWith("0000")) {
+                console.log(newHashable)
+                nonceFound = true;
+                newNonce = i;
+                //stap 3
+                fetch(nonceFoundLink,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        method: "POST",
+                        body: JSON.stringify({
+                            "nonce": newNonce,
+                            "user": "1018610 Lars B"
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => console.log(data))
+                    .catch(res => console.log(res))
+            }
+        }
+    }
 }

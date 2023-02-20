@@ -25,6 +25,7 @@ export function sumArrayValues(arrays) {
     }
 
     //stackoverflow: https://stackoverflow.com/questions/24094466/sum-two-arrays-in-single-iteration
+    // RECURSIVE MAKEN
     const sum = (array1, array2) => {
         return array1.map(function (num, idx) {
             return (num + array2[idx]) % 10;
@@ -45,17 +46,21 @@ export function sumArrayValues(arrays) {
 
 export function charToAscii (char) {
 
-    if ( parseInt(char) ) {
+    if ( isNumeric(char) ) {
 
-        //char is a number
+        //char is a number so return number
         return parseInt(char);
 
     } else {
 
-        // char is a string
+        // char is a string so return string
         return char.charCodeAt(0);
 
     }
+}
+
+export function isNumeric(string) {
+    return ('0123456789'.indexOf(string) !== -1);
 }
 
 //stackoverflow: https://stackoverflow.com/questions/7784620/javascript-number-split-into-individual-digits
@@ -76,14 +81,20 @@ export function arrayTo10Multiple(array) {
         throw new Error("Array too long");
     }
 
-    // adding fill to array
-    const fill = [0,1,2,3,4,5,6,7,8,9];
-    const filledArray = array.concat(fill);
+    let fillIndex = 0;
 
-    // split array into chunk and only use [0]
-    const multipleArray = arrayToChunks(filledArray)[0];
+    // RECURSIVE MAKEN
+    const recurse = (array) => {
+        if(array.length < 10) {
+            array.push(fillIndex);
+            fillIndex++;
+            return recurse(array)
+        } else {
+            return array;
+        }
+    }
 
-    return multipleArray;
+    return recurse(array);
 
 }
 
@@ -91,21 +102,23 @@ export function flattenArray(array) {
     return array.flat(2);
 }
 
-export function arrayToChunks(array, chunkSize = 10) {
+export function arrayToChunks(array) {
+    if(array.length <= MOD10CHUNKSIZE) {
 
-    let chunks = [];
+        return [array]
 
-    for ( let i = 0; i < array.length; i += chunkSize) {
-
-        // slice array into chunk and add to array
-        const chunk = array.slice(i, i + chunkSize);
-        chunks.push( chunk );
-
+    } else {
+        const head = array.slice(0, MOD10CHUNKSIZE);
+        const tail = array.slice(MOD10CHUNKSIZE, array.length);
+        return [head, ...arrayToChunks(tail)]
     }
 
-    return chunks;
-
 }
+
+const MOD10CHUNKSIZE = 10;
+
+const chunks = arrayToChunks([1,2,3,4,5,6,7,8,9, 10])
+console.log(chunks)
 
 export function check10Multiple (array) {
 
